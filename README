@@ -1,0 +1,32 @@
+# Model quantization using dipoorlet and trt quant tools
+
+
+
+## Test the original accuracy of fp32 model
+
+'''python
+python test_torch.py
+'''
+
+
+## Use tensorrt quant tools to quantize model
+'''python
+python build_trt.py
+'''
+
+
+## Use dipoorlet to quantize model
+
+    ### step1 :  use dipoorlet to generate quant parameters
+    '''python
+        python -m torch.distributed.launch --nproc_per_node 1 --use_env -m dipoorlet -I cali_data_2pics/ -N 400 -D trt -M models/mobilev2_model.onnx -A mse -O dipoorlet_mse_brecq_200cls_exp3/ --brecq
+    '''
+    ### step2:  write the quant parameters into trt engine
+    '''python
+    python build_trt_dipoorlet.py
+    '''
+
+## How to test trt engine file
+'''python
+python test_trt.py
+'''   
